@@ -1,35 +1,34 @@
-## Food Order
+## Superheroes App
 
-Food order app from multiple stores. Development time limit - 3 days.
+Test task, practice CRUD operations with a hero instance. Development time limit - 4 days.
 
 ### Functionality:
 
-- Authorization and authentication
-- Order the food from only 1 store at a time
-- Shopping Cart
-- Coupons
-- Checkout and login forms
-- Choose address on Google Map
+- Show the list of heroes
+- Show individual hero card
+- Create a hero
+- Edit a hero
+- Delete a hero
 
 ## Deploy
 
-https://elian-cheng-food-order.netlify.app/
+https://elian-cheng-superheroes-app.netlify.app/
 
 ## Front-End
 
-https://github.com/elian-cheng/food-order/tree/front
+https://github.com/elian-cheng/superheroes-app/tree/front
 
 ## Back-End
 
-https://github.com/elian-cheng/food-order/tree/server
+https://github.com/elian-cheng/superheroes-app/tree/server
 
 ## Install instructions:
 
 ### Front-End:
 
 ```bash
-1. git clone https://github.com/elian-cheng/food-order.git
-2. cd food-order
+1. git clone https://github.com/elian-cheng/superheroes-app.git
+2. cd superheroes-app
 3. git checkout front
 4. npm i
 5. npm run dev
@@ -38,34 +37,42 @@ https://github.com/elian-cheng/food-order/tree/server
 ### Back-End:
 
 ```bash
-1. git clone https://github.com/elian-cheng/food-order.git
-2. cd food-order
+1. git clone https://github.com/elian-cheng/superheroes-app.git
+2. cd superheroes-app
 3. git checkout server
+```
+
+### Add all necessary variables to .env:
+
+```
+PORT=5000
+MONGO_CONNECTION_STRING=
+CLOUDINARY_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+```
+
+### Run the server:
+
+```bash
 4. npm i
 5. npm run start
 ```
 
 ### Server requests:
 
-- GET /products - get products list;
-- GET /products/${id} - get products by it's ID;
-- GET /products?store=${store} - get products by store name ${store};
-- GET /users/${id}/tokens - get user's (ID) access token;
-- POST /users - create(register) a user;
-- POST /signin - login user;
-- GET users/${userID}/orders - get user's (ID) orders;
-- POST users/${userID}/orders - send (save) user's (ID) orders to the server;
+- GET /heroes/?page=${number} - get the list of heroes from the {number} page;
+- POST /heroes - create new hero;
+- PUT /heroes/${id} - update hero by id
+- DELETE /heroes/${id} - delete hero by id
 
 ### Used technologies
 
 - React
 - TypeScript
 - React Router
-- React Context
 - Redux, Redux Toolkit
-- MUI, SCSS
+- SCSS
 - Node.js, Node Express
 - Mongoose, MongoDB
-- JWT Authentication
 - react-hook-form, yup
-- Google Map
