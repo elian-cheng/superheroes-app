@@ -17,6 +17,15 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const hero = await heroService.getOne(req.params.id);
+    res.status(StatusCodes.OK).send(hero);
+  } catch (err) {
+    res.status(err.status).json(err.message);
+  }
+});
+
 router.post(
   "/",
   multerMiddleware,
@@ -34,7 +43,7 @@ router.put(
   checkFileMiddleware,
   validator(hero, "body"),
   async (req, res) => {
-    const hero = await heroService.update(req.body);
+    const hero = await heroService.update(req.params.id, req.body);
     res.status(StatusCodes.OK).send(hero);
   }
 );
