@@ -1,0 +1,42 @@
+.input input {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  outline: none;
+  box-shadow: $boxShadow;
+  font-size: inherit;
+  padding: 5px;
+}
+
+.input input[type='text'],
+input[type='date'] {
+  min-width: 140px;
+}
+
+.input input[type='text']:focus,
+input[type='date']:focus {
+  box-shadow: $boxShadowHover;
+}
+
+.input input[type='date'] {
+  cursor: pointer;
+}
+
+.input input[type='checkbox'],
+input[type='radio'] {
+  width: 20px;
+  height: 20px;
+  margin-bottom: 0;
+  align-self: start;
+  box-shadow: none;
+  cursor: pointer;
+}
+.input input[type='file'] {
+  box-shadow: none;
+  justify-content: center;
+  margin-left: 2rem;
+}
+
+.input-error {
+  border: 1px solid $colorError;
+}

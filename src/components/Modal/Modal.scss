@@ -1,0 +1,67 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 4;
+  background-color: $colorBackdrop;
+}
+
+.modal {
+  position: fixed;
+  gap: 48px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  max-width: 1170px;
+  width: 90%;
+  max-height: 80%;
+  z-index: 5;
+  padding: 2rem 1rem 1rem 1rem;
+  overflow: auto;
+  background-color: $colorYellow;
+  box-shadow: $boxShadow;
+  border-radius: 16px;
+
+  @media (max-width: $mobile) {
+    gap: 16px;
+    height: 80%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-3rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal__close-btn {
+  color: $colorBlueDark;
+  position: absolute;
+  font-size: 4.5rem;
+  line-height: 1rem;
+  background: transparent;
+  top: 15px;
+  right: 2px;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover {
+    color: $colorGrayDark;
+  }
+}
+
+.modal__content {
+  margin: 0.5rem auto;
+}

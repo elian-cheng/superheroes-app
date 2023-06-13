@@ -1,0 +1,48 @@
+.header {
+  &__wrapper {
+    padding: 1.5rem 0;
+    border-bottom: 2px solid $colorGrayLight;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+
+  &__logo {
+    max-width: 8rem;
+    width: 100%;
+  }
+
+  &__title {
+    text-transform: capitalize;
+  }
+}
+
+.nav {
+  &__list {
+    display: flex;
+  }
+
+  &__item {
+    margin-right: 1.3rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  &__link {
+    @include font(1.3rem, $fontMedium, $colorBlack);
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+
+    &_active {
+      text-decoration: underline;
+    }
+
+    &:hover {
+      color: $colorBlue;
+    }
+  }
+}

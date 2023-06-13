@@ -1,0 +1,18 @@
+.form {
+  display: flex;
+  row-gap: 10px;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background-color: $colorWhite;
+  border-radius: 10px;
+  min-width: 290px;
+  max-width: 550px;
+  font-size: 18px;
+  box-shadow: $boxShadow;
+  &__button {
+    margin-top: 10px;
+  }
+}
