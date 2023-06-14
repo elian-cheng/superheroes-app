@@ -4,7 +4,6 @@ const router = require("express").Router();
 const heroService = require("./hero.service");
 const { hero } = require("../../utils/validation/schemas");
 const { validator } = require("../../utils/validation/validator");
-const { multerMiddleware, checkFileMiddleware } = require("../../middleware/imagesMiddleware");
 
 router.get("/", async (req, res) => {
   try {
@@ -26,27 +25,15 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post(
-  "/",
-  multerMiddleware,
-  checkFileMiddleware,
-  validator(hero, "body"),
-  async (req, res) => {
-    const hero = await heroService.save(req.body);
-    res.status(StatusCodes.OK).send(hero);
-  }
-);
+router.post("/", validator(hero, "body"), async (req, res) => {
+  const hero = await heroService.save(req.body);
+  res.status(StatusCodes.OK).send(hero);
+});
 
-router.put(
-  "/:id",
-  multerMiddleware,
-  checkFileMiddleware,
-  validator(hero, "body"),
-  async (req, res) => {
-    const hero = await heroService.update(req.params.id, req.body);
-    res.status(StatusCodes.OK).send(hero);
-  }
-);
+router.put("/:id", validator(hero, "body"), async (req, res) => {
+  const hero = await heroService.update(req.params.id, req.body);
+  res.status(StatusCodes.OK).send(hero);
+});
 
 router.delete("/:id", async (req, res) => {
   await heroService.remove(req.params.id);
