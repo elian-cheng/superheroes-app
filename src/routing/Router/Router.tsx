@@ -1,5 +1,5 @@
 import ErrorPage from 'pages/ErrorPage/ErrorPage';
-import FormPage from 'pages/FormPage/FormPage';
+import HeroPage from 'pages/HeroPage/HeroPage';
 import HomePage from 'pages/HomePage/HomePage';
 import React, { Component } from 'react';
 import { Route, Routes } from 'react-router-dom';
@@ -17,9 +17,9 @@ const routes: IRoute[] = [
     element: <HomePage />,
   },
   {
-    title: 'Form',
-    path: '/form',
-    element: <FormPage />,
+    title: 'Hero',
+    path: '/hero',
+    element: <HeroPage />,
   },
   {
     title: 'Error',

@@ -12,8 +12,8 @@ const navigation: INavigation[] = [
     href: '/',
   },
   {
-    name: 'Form',
-    href: '/form',
+    name: 'Hero',
+    href: '/hero',
   },
 ];
 

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IFormData } from 'pages/FormPage/components/Form/Form';
+import { IFormData } from 'pages/HeroPage/components/Form/Form';
 
 interface IFormState {
   formData: IFormData[];

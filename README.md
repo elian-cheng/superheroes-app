@@ -47,9 +47,6 @@ https://github.com/elian-cheng/superheroes-app/tree/server
 ```
 PORT=5000
 MONGO_CONNECTION_STRING=
-CLOUDINARY_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
 ```
 
 ### Run the server:

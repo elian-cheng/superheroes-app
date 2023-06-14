@@ -1,9 +1,11 @@
 .input input {
   display: flex;
+  width: 90%;
   align-items: center;
   margin-bottom: 0.5rem;
   outline: none;
   box-shadow: $boxShadow;
+  font-family: inherit;
   font-size: inherit;
   padding: 5px;
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import FormPage from './FormPage';
+import FormPage from './HeroPage';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
 import store from 'store';

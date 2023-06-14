@@ -1,0 +1,53 @@
+.hero-page {
+  &__wrapper {
+    margin: 3rem 0;
+    display: flex;
+    gap: 1rem;
+    @media (max-width: 850px) {
+      flex-direction: column;
+    }
+  }
+
+  &__form-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 50px 0 40px;
+  }
+
+  &__gallery {
+    flex: 0 0 auto;
+    width: 50%;
+    @media (max-width: 850px) {
+      width: 100%;
+    }
+  }
+
+  &__wrapper-image {
+    position: relative;
+    height: 400px;
+    display: flex;
+    margin-bottom: 1.5rem;
+  }
+
+  &__image {
+    width: 100%;
+    object-fit: contain;
+  }
+
+  &__img-container {
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    height: 200px;
+    margin-right: 20px;
+  }
+
+  &__images-list {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: center;
+  }
+}

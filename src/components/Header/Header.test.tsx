@@ -6,7 +6,7 @@ import { act } from 'react-dom/test-utils';
 
 describe('Header', () => {
   let homeLink: HTMLElement;
-  let formLink: HTMLElement;
+  let heroLink: HTMLElement;
   beforeEach(() => {
     act(() => {
       render(
@@ -16,12 +16,12 @@ describe('Header', () => {
       );
     });
     homeLink = screen.getByText('Home');
-    formLink = screen.getByText('Form');
+    heroLink = screen.getByText('Hero');
   });
 
   it('should render the component correctly', () => {
     expect(homeLink).toBeInTheDocument();
-    expect(formLink).toBeInTheDocument();
+    expect(heroLink).toBeInTheDocument();
     const logo = document.querySelector('.header__logo');
     expect(logo).toBeInTheDocument();
   });

@@ -2,6 +2,9 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { BASE_URL } from 'API/URL';
 import { toast } from 'react-toastify';
 import axios, { AxiosError } from 'axios';
+import { IFormData } from 'pages/HeroPage/components/Form/Form';
+
+axios.defaults.baseURL = BASE_URL;
 
 export interface IHero {
   _id?: string;
@@ -14,7 +17,7 @@ export interface IHero {
 }
 
 interface IHeroesState {
-  chosenHero: string | null;
+  chosenHero: IHero | null;
   heroes: IHero[];
   isLoading: boolean;
   isError: boolean;
@@ -46,10 +49,25 @@ export const getHero = createAsyncThunk(
   async (id: string, thunkAPI) => {
     try {
       const hero = await axios.get(`${BASE_URL}heroes/${id}`);
+      console.log(hero.data);
       return hero.data;
     } catch (err) {
       const error = err as AxiosError;
       toast.error(error.message, { toastId: 'get-one-hero-toast-error' });
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const createHero = createAsyncThunk(
+  'heroes/create',
+  async (heroData: IFormData, thunkAPI) => {
+    try {
+      await axios.post('/heroes', heroData);
+      toast.success('A new hero was created!');
+    } catch (err) {
+      const error = err as AxiosError;
+      toast.error(error.message, { toastId: 'create-hero-toast-error' });
       return thunkAPI.rejectWithValue(error.message);
     }
   }
@@ -72,7 +90,11 @@ export const heroesSlice = createSlice({
         state.heroes = action.payload;
         state.isLoading = false;
       })
-      .addCase(getHero.fulfilled, (state) => {
+      .addCase(getHero.fulfilled, (state, action) => {
+        state.chosenHero = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(createHero.fulfilled, (state) => {
         state.isLoading = false;
       })
       .addCase(getHeroes.pending, (state) => {
@@ -83,12 +105,21 @@ export const heroesSlice = createSlice({
         state.isLoading = true;
         state.isError = false;
       })
+      .addCase(createHero.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+      })
       .addCase(getHeroes.rejected, (state, action) => {
         state.isError = true;
         state.isLoading = false;
         console.error(action.error.message);
       })
       .addCase(getHero.rejected, (state, action) => {
+        state.isError = true;
+        state.isLoading = false;
+        console.error(action.error.message);
+      })
+      .addCase(createHero.rejected, (state, action) => {
         state.isError = true;
         state.isLoading = false;
         console.error(action.error.message);

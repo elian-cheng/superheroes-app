@@ -1,5 +1,5 @@
 import React, { InputHTMLAttributes } from 'react';
-import { IFormData } from 'pages/FormPage/components/Form/Form';
+import { IFormData } from 'pages/HeroPage/components/Form/Form';
 import { FieldError, UseFormRegister } from 'react-hook-form';
 
 export interface IInput extends InputHTMLAttributes<HTMLInputElement> {
@@ -9,15 +9,7 @@ export interface IInput extends InputHTMLAttributes<HTMLInputElement> {
 export interface IFormInput {
   label: string;
   input: IInput;
-  name:
-    | 'name'
-    | 'image'
-    | 'date'
-    | 'delivery'
-    | 'call'
-    | 'notifications'
-    | 'consent';
-  validationRules: Record<string, unknown>;
+  name: keyof IFormData;
   register: UseFormRegister<IFormData>;
   error: FieldError | undefined;
 }
@@ -26,7 +18,6 @@ const Input: React.FC<IFormInput> = ({
   label,
   name,
   input,
-  validationRules,
   register,
   error,
 }) => {
@@ -37,7 +28,7 @@ const Input: React.FC<IFormInput> = ({
           {label}
         </label>
         <input
-          {...register(name, validationRules)}
+          {...register(name)}
           {...input}
           className={error ? 'input-error' : 'form-input'}
         />

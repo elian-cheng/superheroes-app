@@ -1,0 +1,17 @@
+.hero-image {
+  &__wrapper {
+    box-shadow: 0 0 0 1px $colorGray;
+  }
+
+  &__image {
+    width: 12rem;
+    height: 15rem;
+    cursor: pointer;
+    transition: all ease-out 0.2s;
+    display: block;
+    @media (max-width: 850px) {
+      width: 5rem;
+      height: 7rem;
+    }
+  }
+}

@@ -11,7 +11,7 @@ describe('Router', () => {
     act(() => {
       render(
         <Provider store={store}>
-          <MemoryRouter initialEntries={['/form']}>
+          <MemoryRouter initialEntries={['/hero']}>
             <App />
           </MemoryRouter>
         </Provider>
@@ -41,19 +41,19 @@ describe('Router', () => {
     });
 
     act(() => {
-      const formLink = screen.getByText('Form');
-      formLink.click();
+      const heroLink = screen.getByText('Hero');
+      heroLink.click();
     });
 
-    const formPageContent = screen.getByTestId('form');
-    expect(formPageContent).toBeInTheDocument();
+    const heroPageContent = screen.getByTestId('form');
+    expect(heroPageContent).toBeInTheDocument();
   });
 
-  it('should navigate to HomePage from FormPage', async () => {
+  it('should navigate to HomePage from HeroPage', async () => {
     act(() => {
       render(
         <Provider store={store}>
-          <MemoryRouter initialEntries={['/form']}>
+          <MemoryRouter initialEntries={['/hero']}>
             <App />
           </MemoryRouter>
         </Provider>
