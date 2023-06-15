@@ -17,12 +17,18 @@ export interface IHero {
 }
 
 interface IHeroesState {
+  page: number;
+  limit: number;
+  count: number;
   heroes: IHero[];
   isLoading: boolean;
   isError: boolean;
 }
 
 const initialState: IHeroesState = {
+  page: 1,
+  limit: 5,
+  count: 0,
   heroes: [],
   isLoading: false,
   isError: false,
@@ -30,11 +36,14 @@ const initialState: IHeroesState = {
 
 export const getHeroes = createAsyncThunk(
   'heroes/getAll',
-  async (page: number, thunkAPI) => {
+  async (queryParams: { page: number; limit: number }, thunkAPI) => {
     try {
-      const heroes = await axios.get(`heroes?page=${page || 1}`);
-      return heroes.data;
-    } catch (err) {
+      const { data } = await axios.get(`heroes`, {
+        params: { ...queryParams },
+      });
+      console.log(data);
+      return data;
+    } catch (err: unknown) {
       const error = err as AxiosError;
       toast.error(error.message, { toastId: 'get-heroes-toast-error' });
       return thunkAPI.rejectWithValue(error.message);
@@ -84,19 +93,19 @@ export const deleteHero = createAsyncThunk(
   }
 );
 
-// toast.success("Hero created successfully", {
-//   position: "top-center",
-//   autoClose: 6000
-// });
-
 export const heroesSlice = createSlice({
   name: 'heroes',
   initialState,
-  reducers: {},
+  reducers: {
+    setPage: (state, action) => {
+      state.page = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getHeroes.fulfilled, (state, action) => {
-        state.heroes = action.payload;
+        state.heroes = action.payload.heroes;
+        state.count = action.payload.count;
         state.isLoading = false;
       })
       .addCase(createHero.fulfilled, (state) => {
@@ -146,5 +155,7 @@ export const heroesSlice = createSlice({
       });
   },
 });
+
+export const { setPage } = heroesSlice.actions;
 
 export default heroesSlice.reducer;

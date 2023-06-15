@@ -55,7 +55,6 @@
   &__details {
     @include font(1.2rem, $fontMedium, $colorGray);
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-wrap: wrap;
     gap: 0.5rem;
