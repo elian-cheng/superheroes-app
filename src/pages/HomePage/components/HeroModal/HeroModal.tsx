@@ -1,8 +1,9 @@
-import React, { MouseEventHandler } from 'react';
+import React, { MouseEventHandler, useEffect, useState } from 'react';
 import Loader from 'components/Loader/Loader';
 import DefaultImg from '../../../../assets/images/poster.jpg';
 import Modal from 'components/Modal/Modal';
-import { useGetDetailedHeroQuery } from 'store/modalAPI';
+import { useGetDetailedHeroQuery } from 'store/chosenHeroAPI';
+import { Link } from 'react-router-dom';
 
 type ModalCardProps = {
   cardId: string;
@@ -10,9 +11,16 @@ type ModalCardProps = {
 };
 
 const HeroModal = ({ cardId, handleModal }: ModalCardProps) => {
-  const { data, isLoading, isError } = useGetDetailedHeroQuery(cardId);
-  const hero = data;
-  const heroPoster = hero?.images[0] ? hero?.images[0] : DefaultImg;
+  const { data: hero, isLoading, isError } = useGetDetailedHeroQuery(cardId);
+  const [images, setImages] = useState<Array<string>>([]);
+  const [activeImage, setActiveImage] = useState<string>(DefaultImg);
+
+  useEffect(() => {
+    if (cardId && hero && hero.images && hero.images.length) {
+      setImages(hero.images);
+      setActiveImage(hero.images[0]);
+    }
+  }, [cardId, hero]);
 
   if (isLoading) {
     return (
@@ -35,12 +43,29 @@ const HeroModal = ({ cardId, handleModal }: ModalCardProps) => {
   return (
     <Modal handleModal={handleModal}>
       <div className="hero-modal" data-testid="hero-modal">
-        <div className="hero-modal__image">
-          <img
-            data-testid="hero-modal-poster"
-            src={heroPoster}
-            alt={hero.nickname}
-          />
+        <div className="hero-modal__actions">
+          <div className="hero-modal__image">
+            {activeImage && (
+              <img
+                data-testid="hero-modal-poster"
+                src={activeImage}
+                alt={hero.nickname}
+              />
+            )}
+          </div>
+          <div className="hero-modal__gallery">
+            {images
+              .filter((image) => image !== activeImage)
+              .map((image) => (
+                <div
+                  className="hero-modal__image-wrapper"
+                  onClick={() => setActiveImage(image)}
+                  key={image}
+                >
+                  <img src={image} className="hero-modal__gallery-image" />
+                </div>
+              ))}
+          </div>
         </div>
         <div className="hero-modal__info">
           <h3 className="hero-modal__title">
@@ -61,15 +86,9 @@ const HeroModal = ({ cardId, handleModal }: ModalCardProps) => {
             <h2>Origin</h2>
             <p data-testid="hero-modal-origin">{hero.origin_description}</p>
           </div>
-          <div className="hero-modal__gallery">
-            {hero.images.map((image, index) =>
-              image[1] ? (
-                <span key={index}>
-                  <img src={image} alt={hero.nickname} />
-                </span>
-              ) : null
-            )}
-          </div>
+          <Link className="button-link" to={`/hero?edit=${cardId}`}>
+            Edit
+          </Link>
         </div>
       </div>
     </Modal>

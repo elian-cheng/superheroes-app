@@ -1,6 +1,9 @@
 .hero-modal {
   display: flex;
   gap: 2.5rem;
+  align-items: flex-start;
+  justify-content: flex-start;
+
   @media (max-width: $mobile) {
     align-items: center;
     flex-direction: column;
@@ -9,6 +12,7 @@
   &__image {
     max-width: 350px;
     min-width: 250px;
+    margin-bottom: 1rem;
     & img {
       display: block;
       width: 100%;
@@ -36,6 +40,9 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
   }
 
   &__title {
@@ -48,32 +55,46 @@
   &__details {
     @include font(1.2rem, $fontMedium, $colorGray);
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
 
   &__overview {
-    & h2 {
+    h2 {
       margin-bottom: 10px;
     }
-    & p {
+    p {
       @include font(1.2rem, $fontMedium, $colorFont);
     }
+    margin-bottom: 1rem;
   }
 
   &__gallery {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    & span {
-      display: flex;
-      align-items: center;
-      padding: 4px;
-      background-color: #fff;
-      border-radius: 8px;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  &__image-wrapper {
+    box-shadow: 0 0 0 1px $colorGray;
+  }
+  &__gallery-image {
+    width: 5rem;
+    height: 6rem;
+    cursor: pointer;
+    transition: all ease-out 0.2s;
+    display: block;
+    object-fit: cover;
+    @media (max-width: 550px) {
+      width: 4rem;
+      height: 5rem;
     }
-    & span img {
-      width: 64px;
+    @media (max-width: 425px) {
+      width: 3rem;
+      height: 4rem;
     }
   }
 }

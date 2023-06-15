@@ -1,17 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit';
 import formReducer from './formSlice';
 import heroReducer from './heroSlice';
-import { modalAPI } from './modalAPI';
+import { chosenHeroAPI } from './chosenHeroAPI';
 
 const store = configureStore({
   reducer: {
-    [modalAPI.reducerPath]: modalAPI.reducer,
+    [chosenHeroAPI.reducerPath]: chosenHeroAPI.reducer,
     form: formReducer,
     heroes: heroReducer,
   },
   devTools: process.env.NODE_ENV === 'development',
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(modalAPI.middleware),
+    getDefaultMiddleware().concat(chosenHeroAPI.middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;

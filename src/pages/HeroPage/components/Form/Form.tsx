@@ -1,32 +1,35 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
 import { Resolver, useForm } from 'react-hook-form';
 import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
 // import defaultImg from '../../../../assets/images/poster.jpg';
-// import { createHero, IHero } from 'store/heroSlice';
+import { createHero, IHero, updateHero } from 'store/heroSlice';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-// import { useAppDispatch } from 'hooks/redux';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { BASE_URL } from 'API/URL';
+import { useAppDispatch } from 'hooks/redux';
+// import axios from 'axios';
+// import { toast } from 'react-toastify';
+// import { BASE_URL } from 'API/URL';
 import ImageUpload from '../ImageUpload/ImageUpload';
 
-// export interface IFormData extends Omit<IHero, '_id' | 'images'> {
-//   images: string;
+export type IFormData = Omit<IHero, '_id'>;
+
+// export interface IFormData {
+//   nickname: string;
+//   real_name: string;
+//   origin_description: string;
+//   superpowers: string;
+//   catch_phrase: string;
+//   images: string[];
 // }
 
-export interface IFormData {
-  nickname: string;
-  real_name: string;
-  origin_description: string;
-  superpowers: string;
-  catch_phrase: string;
-  images: string[];
+interface IFormProps {
+  hero: IHero | null;
+  changedImages?: string[];
 }
 
-const Form: FC = () => {
-  // const dispatch = useAppDispatch();
+const Form: FC<IFormProps> = ({ hero, changedImages }) => {
+  const dispatch = useAppDispatch();
 
   const schema = yup.object().shape({
     nickname: yup
@@ -75,61 +78,73 @@ const Form: FC = () => {
       catch_phrase: '',
       images: [] as string[],
     },
-    mode: 'onSubmit',
+    mode: 'onBlur',
     resolver: yupResolver(schema) as Resolver<IFormData>,
     shouldUseNativeValidation: false,
   });
 
-  // const images = watch('images');
+  const customValueHandler = useCallback(
+    (id: keyof IFormData, value: string[]) => {
+      setValue(id, value, {
+        shouldDirty: true,
+        shouldTouch: true,
+        shouldValidate: true,
+      });
+    },
+    [setValue]
+  );
 
-  const customValueHandler = (id: keyof IFormData, value: string[]) => {
-    setValue(id, value, {
-      shouldDirty: true,
-      shouldTouch: true,
-      shouldValidate: true,
-    });
-  };
+  useEffect(() => {
+    if (hero) {
+      reset(hero); // Reset the form and populate values using the hero object
+      if (changedImages) {
+        customValueHandler('images', changedImages);
+      }
+    } else {
+      reset(); // Reset the form if hero is null
+    }
+  }, [hero, reset, changedImages, customValueHandler]);
 
   useEffect(() => {
     reset();
   }, [isSubmitSuccessful, reset]);
 
   const onSubmit = async (data: IFormData) => {
-    try {
-      const requestData = {
-        nickname: data.nickname,
-        real_name: data.real_name,
-        origin_description: data.origin_description,
-        superpowers: data.superpowers,
-        catch_phrase: data.catch_phrase,
-        images: data.images.slice(0, 3),
-      };
-
-      await axios.post(`${BASE_URL}heroes/`, requestData);
-
-      toast.success('A new Hero has just been enlisted!');
-      reset();
-    } catch (err) {
-      console.error(err);
-      toast.error('Failed to create a new Hero');
+    if (hero) {
+      try {
+        const images = changedImages?.length ? changedImages : [];
+        const requestData = {
+          nickname: data.nickname,
+          real_name: data.real_name,
+          origin_description: data.origin_description,
+          superpowers: data.superpowers,
+          catch_phrase: data.catch_phrase,
+          images: [...images, ...data.images].slice(0, 4),
+        };
+        await dispatch(updateHero({ id: hero._id!, heroData: requestData }));
+        location.reload();
+        reset();
+        // navigate('/', { replace: true });
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+      try {
+        const requestData = {
+          nickname: data.nickname,
+          real_name: data.real_name,
+          origin_description: data.origin_description,
+          superpowers: data.superpowers,
+          catch_phrase: data.catch_phrase,
+          images: data.images.slice(0, 4),
+        };
+        await dispatch(createHero(requestData));
+        reset();
+        // navigate('/', { replace: true });
+      } catch (err) {
+        console.error(err);
+      }
     }
-
-    // try {
-    //   await dispatch(createHero(data));
-    //   // toast.success('A new Hero has just been enlisted!');
-    //   // reset();
-    //   // Reset the form after successful submission
-    // } catch (err) {
-    //   console.error(err);
-    //   // toast.error('Failed to create a new Hero');
-    // }
-
-    // try {
-    //   dispatch(createHero(data));
-    // } catch (err) {
-    //   console.error(err);
-    // }
-    // navigate('/orders', { replace: true });
   };
 
   return (
@@ -190,7 +205,7 @@ const Form: FC = () => {
           register={register}
           error={errors.catch_phrase}
         />
-        <p className="label-text">Choose hero images:</p>
+        <p className="label-text">Choose hero images (1-4):</p>
         <ImageUpload
           onChange={(value) => customValueHandler('images', value)}
         />
@@ -202,7 +217,7 @@ const Form: FC = () => {
           className="form__button"
           onClick={handleSubmit(onSubmit)}
         >
-          Submit
+          {hero ? 'Update' : 'Create'}
         </Button>
       </form>
     </>

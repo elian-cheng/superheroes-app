@@ -17,14 +17,14 @@ export interface IHero {
 }
 
 interface IHeroesState {
-  chosenHero: IHero | null;
+  // chosenHero: IHero | null;
   heroes: IHero[];
   isLoading: boolean;
   isError: boolean;
 }
 
 const initialState: IHeroesState = {
-  chosenHero: null,
+  // chosenHero: null,
   heroes: [],
   isLoading: false,
   isError: false,
@@ -32,9 +32,9 @@ const initialState: IHeroesState = {
 
 export const getHeroes = createAsyncThunk(
   'heroes/getAll',
-  async (page = 1, thunkAPI) => {
+  async (page: number, thunkAPI) => {
     try {
-      const heroes = await axios.get(`heroes?page=${page}`);
+      const heroes = await axios.get(`heroes?page=${page || 1}`);
       return heroes.data;
     } catch (err) {
       const error = err as AxiosError;
@@ -44,30 +44,44 @@ export const getHeroes = createAsyncThunk(
   }
 );
 
-export const getHero = createAsyncThunk(
-  'heroes/getOne',
-  async (id: string, thunkAPI) => {
-    try {
-      const hero = await axios.get(`${BASE_URL}heroes/${id}`);
-      console.log(hero.data);
-      return hero.data;
-    } catch (err) {
-      const error = err as AxiosError;
-      toast.error(error.message, { toastId: 'get-one-hero-toast-error' });
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
+// export const getHero = createAsyncThunk(
+//   'heroes/getOne',
+//   async (id: string, thunkAPI) => {
+//     try {
+//       const hero = await axios.get(`heroes/${id}`);
+//       console.log(hero.data);
+//       return hero.data;
+//     } catch (err) {
+//       const error = err as AxiosError;
+//       toast.error(error.message, { toastId: 'get-one-hero-toast-error' });
+//       return thunkAPI.rejectWithValue(error.message);
+//     }
+//   }
+// );
 
 export const createHero = createAsyncThunk(
   'heroes/create',
   async (heroData: IFormData, thunkAPI) => {
     try {
-      await axios.post('/heroes', heroData);
+      await axios.post('heroes', heroData);
       toast.success('A new hero was created!');
     } catch (err) {
       const error = err as AxiosError;
       toast.error(error.message, { toastId: 'create-hero-toast-error' });
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateHero = createAsyncThunk(
+  'heroes/update',
+  async ({ id, heroData }: { id: string; heroData: IFormData }, thunkAPI) => {
+    try {
+      await axios.put(`heroes/${id}`, heroData);
+      toast.success('A hero was updated!');
+    } catch (err) {
+      const error = err as AxiosError;
+      toast.error(error.message, { toastId: 'update-hero-toast-error' });
       return thunkAPI.rejectWithValue(error.message);
     }
   }
@@ -82,7 +96,7 @@ export const heroesSlice = createSlice({
   name: 'heroes',
   initialState,
   reducers: {
-    setChosenHero: (state, { payload }) => (state.chosenHero = payload),
+    // setChosenHero: (state, { payload }) => (state.chosenHero = payload),
   },
   extraReducers: (builder) => {
     builder
@@ -90,22 +104,29 @@ export const heroesSlice = createSlice({
         state.heroes = action.payload;
         state.isLoading = false;
       })
-      .addCase(getHero.fulfilled, (state, action) => {
-        state.chosenHero = action.payload;
+      // .addCase(getHero.fulfilled, (state, action) => {
+      //   state.chosenHero = action.payload;
+      //   state.isLoading = false;
+      // })
+      .addCase(createHero.fulfilled, (state) => {
         state.isLoading = false;
       })
-      .addCase(createHero.fulfilled, (state) => {
+      .addCase(updateHero.fulfilled, (state) => {
         state.isLoading = false;
       })
       .addCase(getHeroes.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
       })
-      .addCase(getHero.pending, (state) => {
+      // .addCase(getHero.pending, (state) => {
+      //   state.isLoading = true;
+      //   state.isError = false;
+      // })
+      .addCase(createHero.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
       })
-      .addCase(createHero.pending, (state) => {
+      .addCase(updateHero.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
       })
@@ -114,12 +135,17 @@ export const heroesSlice = createSlice({
         state.isLoading = false;
         console.error(action.error.message);
       })
-      .addCase(getHero.rejected, (state, action) => {
+      // .addCase(getHero.rejected, (state, action) => {
+      //   state.isError = true;
+      //   state.isLoading = false;
+      //   console.error(action.error.message);
+      // })
+      .addCase(createHero.rejected, (state, action) => {
         state.isError = true;
         state.isLoading = false;
         console.error(action.error.message);
       })
-      .addCase(createHero.rejected, (state, action) => {
+      .addCase(updateHero.rejected, (state, action) => {
         state.isError = true;
         state.isLoading = false;
         console.error(action.error.message);
@@ -127,6 +153,6 @@ export const heroesSlice = createSlice({
   },
 });
 
-export const { setChosenHero } = heroesSlice.actions;
+// export const { setChosenHero } = heroesSlice.actions;
 
 export default heroesSlice.reducer;

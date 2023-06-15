@@ -1,19 +1,20 @@
 export const ImageCard = ({
   image,
-  index,
-  setActiveImage,
+  onDelete,
 }: {
   image: string;
-  index: number;
-  setActiveImage: (image: string) => void;
+  onDelete: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   return (
     <>
-      <div
-        className="hero-image__wrapper"
-        onClick={() => setActiveImage(image)}
-        key={index}
-      >
+      <div className="hero-image__wrapper" key={image}>
+        <button
+          className="hero-image__close-btn"
+          data-testid="hero-image-close-btn"
+          onClick={onDelete}
+        >
+          &times;
+        </button>
         <img src={image} className="hero-image__image" />
       </div>
     </>

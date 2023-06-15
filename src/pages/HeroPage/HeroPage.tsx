@@ -1,12 +1,15 @@
 import Loader from 'components/Loader/Loader';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useGetDetailedHeroQuery } from 'store/modalAPI';
+import { useGetDetailedHeroQuery } from 'store/chosenHeroAPI';
 import Form from './components/Form/Form';
 import DefaultImg from '../../assets/images/poster.jpg';
 import ImageCard from './components/ImageCard/ImageCard';
+import { useAppDispatch } from 'hooks/redux';
+import { updateHero } from 'store/heroSlice';
 
 const HeroPage: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [url] = useSearchParams();
   const [heroId, setHeroId] = useState<string>('');
   const [images, setImages] = useState<Array<string>>([]);
@@ -19,20 +22,52 @@ const HeroPage: React.FC = () => {
     }
   }, [url]);
 
-  const { data, isLoading, isError } = useGetDetailedHeroQuery(heroId);
-  const hero = data;
+  const { data: hero, isLoading, isError } = useGetDetailedHeroQuery(heroId);
 
   useEffect(() => {
-    if (hero && hero.images && hero.images.length) {
+    if (heroId && hero && hero.images && hero.images.length) {
       setImages(hero.images);
       setActiveImage(hero.images[0]);
     }
-  }, [hero]);
+  }, [heroId, hero]);
+
+  const deleteImageHandler = useCallback(
+    async (e: React.MouseEvent<HTMLElement>) => {
+      const currentImage = (e.currentTarget.nextSibling as HTMLImageElement)
+        ?.src;
+      const filteredImages = images.filter((img) => img !== currentImage);
+      setImages(filteredImages);
+
+      if (filteredImages.length > 0) {
+        setActiveImage(filteredImages[0]);
+      } else {
+        setActiveImage(DefaultImg);
+      }
+
+      if (hero) {
+        try {
+          const requestData = {
+            nickname: hero.nickname,
+            real_name: hero.real_name,
+            origin_description: hero.origin_description,
+            superpowers: hero.superpowers,
+            catch_phrase: hero.catch_phrase,
+            images: filteredImages,
+          };
+          await dispatch(updateHero({ id: hero._id!, heroData: requestData }));
+          // location.reload();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    },
+    [hero, images, dispatch]
+  );
 
   if (!url || !heroId || isError) {
     return (
       <div className="hero-page__form-wrapper">
-        <Form />
+        <Form hero={heroId && hero ? hero : null} />
       </div>
     );
   }
@@ -46,22 +81,32 @@ const HeroPage: React.FC = () => {
           <div className="hero-page__gallery">
             <div className="hero-page__wrapper-image">
               {activeImage && (
-                <img src={activeImage} className="hero-page__image" />
+                <>
+                  <button
+                    className="hero-image__close-btn"
+                    data-testid="hero-image-close-btn"
+                    onClick={deleteImageHandler}
+                  >
+                    &times;
+                  </button>
+                  <img src={activeImage} className="hero-page__image" />
+                </>
               )}
             </div>
 
             <div className="hero-page__images-list">
-              {images.map((image, index) => (
-                <ImageCard
-                  image={image}
-                  index={index}
-                  setActiveImage={() => setActiveImage(image)}
-                  key={index}
-                />
-              ))}
+              {images
+                .filter((image) => image !== activeImage)
+                .map((image) => (
+                  <ImageCard
+                    image={image}
+                    key={image}
+                    onDelete={deleteImageHandler}
+                  />
+                ))}
             </div>
           </div>
-          <Form />
+          <Form hero={heroId && hero ? hero : null} changedImages={images} />
         </div>
       )}
     </>

@@ -3,9 +3,9 @@
   column-gap: 20px;
   row-gap: 30px;
   margin-bottom: 30px;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 300px));
+  grid-template-columns: repeat(5, minmax(150px, 300px));
   justify-content: center;
-  @media (max-width: $mobile) {
+  @media (max-width: $tablet) {
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   }
 }
@@ -61,6 +61,26 @@
   line-height: 1.5rem;
   @media (max-width: $mobileSmall) {
     font-size: 1.2rem;
+  }
+}
+
+.button-link {
+  font: inherit;
+  border: 1px solid $colorBlueDark;
+  background: $colorBlueDark;
+  padding: 0.75rem 3.5rem;
+  cursor: pointer;
+  font-size: 1.15rem;
+  border-radius: 30px;
+  font-weight: 600;
+  color: $colorWhite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease 0s;
+  width: 80%;
+  &:hover {
+    background: $colorBlue;
   }
 }
 

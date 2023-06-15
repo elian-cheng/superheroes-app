@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 // @ts-ignore
 import { WidgetLoader, Widget } from 'react-cloudinary-upload-widget';
 
@@ -42,16 +42,34 @@ interface IImageUploadProps {
 
 export const ImageUpload: FC<IImageUploadProps> = ({ onChange }) => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [hasUploadedImages, setHasUploadedImages] = useState(false);
+
+  // const imageUploadHandler = useCallback(
+  //   (result: ICloudinaryResponse) => {
+  //     const secureUrl = result.info.secure_url;
+  //     const updatedImages = [...uploadedImages, secureUrl];
+  //     setUploadedImages(updatedImages);
+  //     onChange(uploadedImages);
+  //     console.log(updatedImages);
+  //   },
+  //   [onChange, uploadedImages]
+  // );
 
   const imageUploadHandler = useCallback(
     (result: ICloudinaryResponse) => {
+      setHasUploadedImages(false);
       const secureUrl = result.info.secure_url;
       setUploadedImages((prevImages) => [...prevImages, secureUrl]);
-      onChange(uploadedImages);
-      console.log(uploadedImages);
     },
-    [onChange, uploadedImages]
+    [setUploadedImages]
   );
+
+  useEffect(() => {
+    if (uploadedImages.length > 0 && !hasUploadedImages) {
+      onChange(uploadedImages);
+      setHasUploadedImages(true);
+    }
+  }, [onChange, uploadedImages, hasUploadedImages]);
 
   return (
     <>
