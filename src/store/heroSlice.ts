@@ -17,14 +17,12 @@ export interface IHero {
 }
 
 interface IHeroesState {
-  // chosenHero: IHero | null;
   heroes: IHero[];
   isLoading: boolean;
   isError: boolean;
 }
 
 const initialState: IHeroesState = {
-  // chosenHero: null,
   heroes: [],
   isLoading: false,
   isError: false,
@@ -43,21 +41,6 @@ export const getHeroes = createAsyncThunk(
     }
   }
 );
-
-// export const getHero = createAsyncThunk(
-//   'heroes/getOne',
-//   async (id: string, thunkAPI) => {
-//     try {
-//       const hero = await axios.get(`heroes/${id}`);
-//       console.log(hero.data);
-//       return hero.data;
-//     } catch (err) {
-//       const error = err as AxiosError;
-//       toast.error(error.message, { toastId: 'get-one-hero-toast-error' });
-//       return thunkAPI.rejectWithValue(error.message);
-//     }
-//   }
-// );
 
 export const createHero = createAsyncThunk(
   'heroes/create',
@@ -78,10 +61,24 @@ export const updateHero = createAsyncThunk(
   async ({ id, heroData }: { id: string; heroData: IFormData }, thunkAPI) => {
     try {
       await axios.put(`heroes/${id}`, heroData);
-      toast.success('A hero was updated!');
+      toast.success('The hero was updated!');
     } catch (err) {
       const error = err as AxiosError;
       toast.error(error.message, { toastId: 'update-hero-toast-error' });
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deleteHero = createAsyncThunk(
+  'heroes/delete',
+  async (id: string, thunkAPI) => {
+    try {
+      await axios.delete(`heroes/${id}`);
+      toast.success('The hero was removed!');
+    } catch (err) {
+      const error = err as AxiosError;
+      toast.error(error.message, { toastId: 'delete-hero-toast-error' });
       return thunkAPI.rejectWithValue(error.message);
     }
   }
@@ -95,33 +92,26 @@ export const updateHero = createAsyncThunk(
 export const heroesSlice = createSlice({
   name: 'heroes',
   initialState,
-  reducers: {
-    // setChosenHero: (state, { payload }) => (state.chosenHero = payload),
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getHeroes.fulfilled, (state, action) => {
         state.heroes = action.payload;
         state.isLoading = false;
       })
-      // .addCase(getHero.fulfilled, (state, action) => {
-      //   state.chosenHero = action.payload;
-      //   state.isLoading = false;
-      // })
       .addCase(createHero.fulfilled, (state) => {
         state.isLoading = false;
       })
       .addCase(updateHero.fulfilled, (state) => {
         state.isLoading = false;
       })
+      .addCase(deleteHero.fulfilled, (state) => {
+        state.isLoading = false;
+      })
       .addCase(getHeroes.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
       })
-      // .addCase(getHero.pending, (state) => {
-      //   state.isLoading = true;
-      //   state.isError = false;
-      // })
       .addCase(createHero.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
@@ -130,16 +120,15 @@ export const heroesSlice = createSlice({
         state.isLoading = true;
         state.isError = false;
       })
+      .addCase(deleteHero.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+      })
       .addCase(getHeroes.rejected, (state, action) => {
         state.isError = true;
         state.isLoading = false;
         console.error(action.error.message);
       })
-      // .addCase(getHero.rejected, (state, action) => {
-      //   state.isError = true;
-      //   state.isLoading = false;
-      //   console.error(action.error.message);
-      // })
       .addCase(createHero.rejected, (state, action) => {
         state.isError = true;
         state.isLoading = false;
@@ -149,10 +138,13 @@ export const heroesSlice = createSlice({
         state.isError = true;
         state.isLoading = false;
         console.error(action.error.message);
+      })
+      .addCase(deleteHero.rejected, (state, action) => {
+        state.isError = true;
+        state.isLoading = false;
+        console.error(action.error.message);
       });
   },
 });
-
-// export const { setChosenHero } = heroesSlice.actions;
 
 export default heroesSlice.reducer;

@@ -59,6 +59,7 @@ MONGO_CONNECTION_STRING=
 ### Server requests:
 
 - GET /heroes/?page=${number} - get the list of heroes from the {number} page;
+- GET /heroes/${id} - get the hero by id;
 - POST /heroes - create new hero;
 - PUT /heroes/${id} - update hero by id
 - DELETE /heroes/${id} - delete hero by id
@@ -68,8 +69,9 @@ MONGO_CONNECTION_STRING=
 - React
 - TypeScript
 - React Router
-- Redux, Redux Toolkit
+- Redux, Redux Toolkit, RTK Query
 - SCSS
 - Node.js, Node Express
 - Mongoose, MongoDB
+- Cloudinary
 - react-hook-form, yup

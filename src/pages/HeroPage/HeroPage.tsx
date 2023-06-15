@@ -1,15 +1,17 @@
 import Loader from 'components/Loader/Loader';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useGetDetailedHeroQuery } from 'store/chosenHeroAPI';
 import Form from './components/Form/Form';
 import DefaultImg from '../../assets/images/poster.jpg';
 import ImageCard from './components/ImageCard/ImageCard';
 import { useAppDispatch } from 'hooks/redux';
-import { updateHero } from 'store/heroSlice';
+import { deleteHero, updateHero } from 'store/heroSlice';
+import Button from 'components/Button/Button';
 
 const HeroPage: React.FC = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [url] = useSearchParams();
   const [heroId, setHeroId] = useState<string>('');
   const [images, setImages] = useState<Array<string>>([]);
@@ -30,6 +32,17 @@ const HeroPage: React.FC = () => {
       setActiveImage(hero.images[0]);
     }
   }, [heroId, hero]);
+
+  const deleteHeroHandler = useCallback(async () => {
+    if (hero) {
+      try {
+        await dispatch(deleteHero(hero._id!));
+        navigate('/');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }, [hero, dispatch, navigate]);
 
   const deleteImageHandler = useCallback(
     async (e: React.MouseEvent<HTMLElement>) => {
@@ -55,7 +68,6 @@ const HeroPage: React.FC = () => {
             images: filteredImages,
           };
           await dispatch(updateHero({ id: hero._id!, heroData: requestData }));
-          // location.reload();
         } catch (err) {
           console.error(err);
         }
@@ -77,37 +89,42 @@ const HeroPage: React.FC = () => {
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="hero-page__wrapper">
-          <div className="hero-page__gallery">
-            <div className="hero-page__wrapper-image">
-              {activeImage && (
-                <>
-                  <button
-                    className="hero-image__close-btn"
-                    data-testid="hero-image-close-btn"
-                    onClick={deleteImageHandler}
-                  >
-                    &times;
-                  </button>
-                  <img src={activeImage} className="hero-page__image" />
-                </>
-              )}
-            </div>
+        <>
+          <div className="hero-page__wrapper">
+            <div className="hero-page__gallery">
+              <div className="hero-page__wrapper-image">
+                {activeImage && (
+                  <>
+                    <button
+                      className="hero-image__close-btn"
+                      data-testid="hero-image-close-btn"
+                      onClick={deleteImageHandler}
+                    >
+                      &times;
+                    </button>
+                    <img src={activeImage} className="hero-page__image" />
+                  </>
+                )}
+              </div>
 
-            <div className="hero-page__images-list">
-              {images
-                .filter((image) => image !== activeImage)
-                .map((image) => (
-                  <ImageCard
-                    image={image}
-                    key={image}
-                    onDelete={deleteImageHandler}
-                  />
-                ))}
+              <div className="hero-page__images-list">
+                {images
+                  .filter((image) => image !== activeImage)
+                  .map((image) => (
+                    <ImageCard
+                      image={image}
+                      key={image}
+                      onDelete={deleteImageHandler}
+                    />
+                  ))}
+              </div>
             </div>
+            <Form hero={heroId && hero ? hero : null} changedImages={images} />
           </div>
-          <Form hero={heroId && hero ? hero : null} changedImages={images} />
-        </div>
+          <Button className="hero-page__delete-btn" onClick={deleteHeroHandler}>
+            Delete Hero
+          </Button>
+        </>
       )}
     </>
   );

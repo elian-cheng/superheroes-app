@@ -11,6 +11,7 @@ import { useAppDispatch } from 'hooks/redux';
 // import { toast } from 'react-toastify';
 // import { BASE_URL } from 'API/URL';
 import ImageUpload from '../ImageUpload/ImageUpload';
+import { useNavigate } from 'react-router-dom';
 
 export type IFormData = Omit<IHero, '_id'>;
 
@@ -30,6 +31,7 @@ interface IFormProps {
 
 const Form: FC<IFormProps> = ({ hero, changedImages }) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const schema = yup.object().shape({
     nickname: yup
@@ -124,7 +126,7 @@ const Form: FC<IFormProps> = ({ hero, changedImages }) => {
         await dispatch(updateHero({ id: hero._id!, heroData: requestData }));
         location.reload();
         reset();
-        // navigate('/', { replace: true });
+        navigate('/');
       } catch (err) {
         console.error(err);
       }
@@ -140,7 +142,6 @@ const Form: FC<IFormProps> = ({ hero, changedImages }) => {
         };
         await dispatch(createHero(requestData));
         reset();
-        // navigate('/', { replace: true });
       } catch (err) {
         console.error(err);
       }

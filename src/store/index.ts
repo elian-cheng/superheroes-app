@@ -1,12 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import formReducer from './formSlice';
 import heroReducer from './heroSlice';
 import { chosenHeroAPI } from './chosenHeroAPI';
 
 const store = configureStore({
   reducer: {
     [chosenHeroAPI.reducerPath]: chosenHeroAPI.reducer,
-    form: formReducer,
     heroes: heroReducer,
   },
   devTools: process.env.NODE_ENV === 'development',
