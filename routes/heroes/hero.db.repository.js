@@ -4,8 +4,16 @@ const ENTITY_NAME = "hero";
 
 const getHeroes = async (skip, limit) => {
   try {
-    const heroes = await Hero.find({}).skip(skip).limit(limit);
-    return heroes;
+    const heroes = await Hero.find({}, "", {
+      skip,
+      limit: Number(limit)
+    }).sort({ createdAt: -1 });
+    const count = await Hero.count();
+    const data = {
+      heroes,
+      count
+    };
+    return data;
   } catch (err) {
     throw new BAD_REQUEST_ERROR("Something went wrong.");
   }
@@ -30,7 +38,7 @@ const createHero = async heroData => {
 
 const updateHero = async (id, heroData) => {
   try {
-    await Hero.findOneAndUpdate(
+    const hero = await Hero.findOneAndUpdate(
       { _id: id },
       { $set: heroData },
       {

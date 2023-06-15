@@ -7,10 +7,10 @@ const { validator } = require("../../utils/validation/validator");
 
 router.get("/", async (req, res) => {
   try {
-    let { page = 1, limit = 5 } = req.query;
+    const { page, limit } = req.query;
     const skip = (page - 1) * limit;
-    const heroes = await heroService.getAll(skip, limit);
-    res.status(StatusCodes.OK).send(heroes);
+    const heroesData = await heroService.getAll(skip, limit);
+    res.status(StatusCodes.OK).send(heroesData);
   } catch (err) {
     res.status(err.status).json(err.message);
   }
