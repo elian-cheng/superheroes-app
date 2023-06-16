@@ -3,17 +3,11 @@ import { render, screen } from '@testing-library/react';
 import Input from './Input';
 import { act } from 'react-dom/test-utils';
 import { vi } from 'vitest';
+import { IFormData } from 'pages/HeroPage/components/Form/Form';
 
 interface ITestInput {
   id: string;
-  name:
-    | 'name'
-    | 'image'
-    | 'date'
-    | 'delivery'
-    | 'call'
-    | 'notifications'
-    | 'consent';
+  name: keyof IFormData;
   value: string;
   type: string;
 }
@@ -21,14 +15,14 @@ interface ITestInput {
 describe('Input', () => {
   const input: ITestInput = {
     id: 'input-id',
-    name: 'name',
+    name: 'nickname',
     value: 'test value',
     type: 'text',
   };
 
   const label = 'Test label';
 
-  const validationRules = {};
+  // const validationRules = {};
 
   const register = vi.fn();
 
@@ -40,7 +34,6 @@ describe('Input', () => {
           label={label}
           name={input.name}
           input={input}
-          validationRules={validationRules}
           register={register}
           error={error}
         />
@@ -68,7 +61,6 @@ describe('Input', () => {
           label={label}
           name={input.name}
           input={input}
-          validationRules={validationRules}
           register={register}
           error={error}
         />
