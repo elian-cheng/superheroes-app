@@ -1,165 +1,119 @@
-import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import '@testing-library/jest-dom';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Form from './Form';
 import { act } from 'react-dom/test-utils';
-import { vi } from 'vitest';
-
-export const mockInvalidForm = () => {
-  return [
-    {
-      name: 'Вася',
-      date: '2024-03-25',
-      delivery: 'default',
-      notifications: 'No',
-      image: '',
-      consent: 'Yes',
-      call: 'Yes',
-    },
-    {
-      name: 'Testing',
-      date: '2024-03-25',
-      delivery: 'Courier',
-      notifications: 'No',
-      image: '',
-      consent: 'Yes',
-      call: 'No',
-    },
-    {
-      name: 'Testing',
-      date: '2023-02-05',
-      delivery: 'Express',
-      notifications: 'No',
-      image: '',
-      consent: 'Yes',
-      call: 'No',
-    },
-  ];
-};
+import { Provider } from 'react-redux';
+import store from 'store';
 
 describe('Form', () => {
   let form: HTMLElement;
-  let name: HTMLInputElement;
-  let date: HTMLInputElement;
-  let delivery: HTMLSelectElement;
-  let image: HTMLInputElement;
-  let consent: HTMLInputElement;
-  let call: HTMLInputElement;
-  let button: HTMLButtonElement;
-  let modal: HTMLElement | null;
-  const mockInvalid = mockInvalidForm();
+  let nickname: HTMLInputElement;
+  let realName: HTMLInputElement;
+  let origin: HTMLInputElement;
+  let superpowers: HTMLInputElement;
+  let catchPhrase: HTMLInputElement;
 
-  beforeEach(async () => {
+  test('should render the component correctly', async () => {
     act(() => {
-      const mock = vi.fn();
-      render(<Form setFormState={mock} />);
+      render(
+        <Provider store={store}>
+          <Form hero={null} changedImages={[]} />
+        </Provider>
+      );
     });
-    form = screen.getByTestId('form');
-    name = screen.getByRole('textbox', { name: /Name:/i });
-    date = document.getElementById('date') as HTMLInputElement;
-    image = document.getElementById('image') as HTMLInputElement;
-    consent = document.getElementById('consent') as HTMLInputElement;
-    call = screen.getByLabelText('Yes, I need a call');
-    delivery = screen.getByRole('combobox');
-    button = screen.getByRole('button', { name: /Submit/i });
-    modal = screen.queryByText(/Your order was successfully submitted!/i);
+
+    await waitFor(() => {
+      form = document.querySelector('.form') as HTMLElement;
+      expect(form).toBeInTheDocument();
+      expect(document.querySelectorAll('input').length).toBe(5);
+      expect(screen.getByLabelText('Nickname:')).toBeInTheDocument();
+      expect(screen.getByLabelText('Superpowers:')).toBeInTheDocument();
+      expect(screen.getByLabelText('Origin description:')).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Create' })
+      ).toBeInTheDocument();
+    });
   });
 
-  const createCard = (
-    nameValue: string,
-    dateValue: string,
-    deliveryValue: string
-  ) => {
-    userEvent.type(name, nameValue);
-    fireEvent.change(date, { target: { value: dateValue } });
-    fireEvent.change(delivery, { target: { value: deliveryValue } });
-    fireEvent.change(image, {
-      target: { files: [new File([], 'image.png', { type: 'image/png' })] },
+  test('should submit the form successfully', async () => {
+    act(() => {
+      render(
+        <Provider store={store}>
+          <Form hero={null} changedImages={[]} />
+        </Provider>
+      );
     });
-    fireEvent.click(consent);
-    fireEvent.click(call);
+
+    fireEvent.change(screen.getByLabelText(/Nickname:/i), {
+      target: { value: 'Superhero' },
+    });
+    fireEvent.change(screen.getByLabelText(/Real name:/i), {
+      target: { value: 'John Doe' },
+    });
+    fireEvent.change(screen.getByLabelText(/Origin description:/i), {
+      target: {
+        value: 'A hero from another world that came to us to rescue everyone',
+      },
+    });
+    fireEvent.change(screen.getByLabelText(/Superpowers:/i), {
+      target: { value: 'Flight, super strength' },
+    });
+    fireEvent.change(screen.getByLabelText(/Catch Phrase:/i), {
+      target: { value: 'I am a superhero' },
+    });
+
+    await waitFor(() => {
+      nickname = document.getElementById('nickname') as HTMLInputElement;
+      realName = document.getElementById('real_name') as HTMLInputElement;
+      superpowers = document.getElementById('superpowers') as HTMLInputElement;
+      origin = document.getElementById(
+        'origin_description'
+      ) as HTMLInputElement;
+      catchPhrase = document.getElementById('catch_phrase') as HTMLInputElement;
+      expect(nickname.value).toBe('Superhero');
+      expect(realName.value).toBe('John Doe');
+      expect(superpowers.value).toBe('Flight, super strength');
+      expect(origin.value).toBe(
+        'A hero from another world that came to us to rescue everyone'
+      );
+      expect(catchPhrase.value).toBe('I am a superhero');
+    });
+  });
+
+  test('should display error messages for invalid form fields', async () => {
+    act(() => {
+      render(
+        <Provider store={store}>
+          <Form hero={null} changedImages={[]} />
+        </Provider>
+      );
+    });
+
+    const button = screen.getByRole('button', { name: /Create/i });
     fireEvent.click(button);
-  };
 
-  it('should render the component correctly', () => {
-    expect(form).toBeInTheDocument();
-    expect(document.querySelectorAll('input').length).toBe(7);
-    const checkboxes = screen.getAllByRole('checkbox');
-    expect(checkboxes.length).toBe(2);
-    const radios = screen.getAllByRole('radio');
-    expect(radios.length).toBe(2);
-    expect(screen.getByLabelText('Name:')).toBeInTheDocument();
-    expect(screen.getByLabelText('Delivery date:')).toBeInTheDocument();
-    expect(
-      screen.getByLabelText('Agree to terms & conditions')
-    ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument();
-  });
+    const nicknameError = await screen.findByText(
+      /Nickname is a required field/i
+    );
+    expect(nicknameError).toBeInTheDocument();
 
-  it('should show validation errors when submitting the form with invalid data', async () => {
-    act(() => {
-      fireEvent.click(button);
-    });
-    await waitFor(() => {
-      expect(screen.getAllByTestId('inputError')).toHaveLength(6);
-    });
-  });
+    const realNameError = await screen.findByText(
+      /Real name is a required field/i
+    );
+    expect(realNameError).toBeInTheDocument();
 
-  it('should submit the valid form', async () => {
-    act(() => {
-      createCard('Testing', '2025-05-14', 'Express');
-    });
+    const originDescriptionError = await screen.findByText(
+      /No origin story provided/i
+    );
+    expect(originDescriptionError).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(name.value).toBe('Testing');
-      expect(date.value).toBe('2025-05-14');
-      expect(delivery.value).toBe('Express');
-      expect(image.value).toBe('');
-      expect(consent.value).toBe('on');
-      expect(call.value).toBe('Yes');
-    });
-  });
+    const superpowersError = await screen.findByText(
+      /No superpowers list provided/i
+    );
+    expect(superpowersError).toBeInTheDocument();
 
-  it('should not submit the invalid form', async () => {
-    let data = mockInvalid[0];
-    act(() => {
-      userEvent.type(name, data.name);
-      userEvent.type(date, data.date);
-      userEvent.selectOptions(delivery, data.delivery);
-      userEvent.upload(image, new File([data.image], 'example.png'));
-      userEvent.click(button);
-    });
-    await waitFor(() => {
-      expect(modal).not.toBeInTheDocument();
-    });
-
-    data = mockInvalid[1];
-    act(() => {
-      name.value = '';
-      userEvent.type(name, data.name);
-      userEvent.clear(date);
-      userEvent.selectOptions(delivery, data.delivery);
-      userEvent.upload(image, new File([data.image], 'example.png'));
-      userEvent.click(consent);
-      userEvent.click(button);
-    });
-    await waitFor(() => {
-      expect(modal).not.toBeInTheDocument();
-    });
-
-    data = mockInvalid[2];
-    act(() => {
-      userEvent.clear(name);
-      userEvent.type(date, data.date);
-      userEvent.selectOptions(delivery, data.delivery);
-      userEvent.upload(image, new File([data.image], 'example.png'));
-      userEvent.click(consent);
-      userEvent.click(call);
-      userEvent.click(button);
-    });
-    await waitFor(() => {
-      expect(modal).not.toBeInTheDocument();
-    });
+    const catchPhraseError = await screen.findByText(
+      /No catch phrase provided/i
+    );
+    expect(catchPhraseError).toBeInTheDocument();
   });
 });

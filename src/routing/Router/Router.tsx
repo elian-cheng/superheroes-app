@@ -1,8 +1,10 @@
-import ErrorPage from 'pages/ErrorPage/ErrorPage';
-import HeroPage from 'pages/HeroPage/HeroPage';
+import Loader from 'components/Loader/Loader';
 import HomePage from 'pages/HomePage/HomePage';
-import React, { Component } from 'react';
+import React, { Component, lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
+
+const HeroPage = lazy(() => import('pages/HeroPage/HeroPage'));
+const ErrorPage = lazy(() => import('pages/ErrorPage/ErrorPage'));
 
 interface IRoute {
   title: string;
@@ -32,15 +34,17 @@ export default class Router extends Component {
   render() {
     return (
       <>
-        <Routes>
-          {routes.map((route) => (
-            <Route
-              key={route.title}
-              path={route.path}
-              element={route.element}
-            />
-          ))}
-        </Routes>
+        <Suspense fallback={<Loader />}>
+          <Routes>
+            {routes.map((route) => (
+              <Route
+                key={route.title}
+                path={route.path}
+                element={route.element}
+              />
+            ))}
+          </Routes>
+        </Suspense>
       </>
     );
   }

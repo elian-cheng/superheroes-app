@@ -59,7 +59,7 @@ export const heroModal: IHero = {
 };
 
 export const handlers = [
-  rest.get(`${BASE_URL}heroes?page=1`, (req, res, ctx) => {
+  rest.get(`${BASE_URL}heroes?page=1?limit=5`, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(heroesList));
   }),
 

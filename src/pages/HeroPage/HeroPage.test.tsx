@@ -1,22 +1,28 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import FormPage from './HeroPage';
+import HeroPage from './HeroPage';
 import { act } from 'react-dom/test-utils';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from 'store';
 
-describe('Form Page', () => {
-  it('should render the component correctly', () => {
+describe('Hero Page', () => {
+  it('should render the component correctly', async () => {
     act(() => {
       render(
         <Provider store={store}>
-          <FormPage />
+          <Router>
+            <HeroPage />
+          </Router>
         </Provider>
       );
     });
-    expect(screen.getByText(/Your orders:/i)).toBeInTheDocument();
-    expect(screen.getByText(/There are no orders yet/i)).toBeInTheDocument();
-    expect(document.querySelector('form')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText(/Create/i)).toBeInTheDocument();
+      expect(screen.getByText(/Nickname:/i)).toBeInTheDocument();
+      expect(document.querySelector('form')).toBeInTheDocument();
+    });
   });
 });

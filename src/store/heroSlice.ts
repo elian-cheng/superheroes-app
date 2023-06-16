@@ -41,7 +41,6 @@ export const getHeroes = createAsyncThunk(
       const { data } = await axios.get(`heroes`, {
         params: { ...queryParams },
       });
-      console.log(data);
       return data;
     } catch (err: unknown) {
       const error = err as AxiosError;

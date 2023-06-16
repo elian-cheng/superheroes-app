@@ -90,11 +90,14 @@ export const ImageUpload: FC<IImageUploadProps> = ({ onChange }) => {
         maxFiles={3}
         style={{
           color: 'white',
-          border: 'none',
-          width: '120px',
-          backgroundColor: 'green',
+          fontSize: '1.5rem',
+          fontFamily: 'inherit',
+          backgroundColor: '#69a6ce',
+          border: '1px solid #69a6ce',
           borderRadius: '4px',
-          height: '25px',
+          width: '300px',
+          marginBottom: '12px',
+          padding: '1rem',
         }} // inline styling only or style id='cloudinary_upload_button'
         folder={uploadFolder} // set cloudinary folder name to send file
         cropping={false} // set ability to crop images -> default = true

@@ -24,11 +24,7 @@ const HeroPage: React.FC = () => {
     }
   }, [url]);
 
-  const {
-    data: hero,
-    isLoading,
-    isError,
-  } = useGetDetailedHeroQuery(heroId || 'elian');
+  const { data: hero, isLoading, isError } = useGetDetailedHeroQuery(heroId);
 
   useEffect(() => {
     if (heroId && hero && hero.images && hero.images.length) {

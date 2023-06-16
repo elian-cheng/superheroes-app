@@ -29,7 +29,7 @@ describe('Router', () => {
     });
   });
 
-  it('should navigate to FormPage from HomePage', () => {
+  it('should navigate to HeroPage from HomePage', async () => {
     act(() => {
       render(
         <Provider store={store}>
@@ -45,8 +45,10 @@ describe('Router', () => {
       heroLink.click();
     });
 
-    const heroPageContent = screen.getByTestId('form');
-    expect(heroPageContent).toBeInTheDocument();
+    await waitFor(() => {
+      const heroPageContent = screen.getByTestId('form');
+      expect(heroPageContent).toBeInTheDocument();
+    });
   });
 
   it('should navigate to HomePage from HeroPage', async () => {
@@ -71,7 +73,7 @@ describe('Router', () => {
     });
   });
 
-  it('should navigate to ErrorPage on the wrong URL', () => {
+  it('should navigate to ErrorPage on the wrong URL', async () => {
     act(() => {
       render(
         <MemoryRouter initialEntries={['/test']}>
@@ -80,12 +82,14 @@ describe('Router', () => {
       );
     });
 
-    const errorElement = document.getElementById('error-page');
-    const errorNumber = screen.getByText('404');
-    const errorText = screen.getByText('Oops! Page is not found');
+    await waitFor(() => {
+      const errorElement = document.getElementById('error-page');
+      const errorNumber = screen.getByText('404');
+      const errorText = screen.getByText('Oops! Page is not found');
 
-    expect(errorElement).toBeInTheDocument();
-    expect(errorNumber).toBeInTheDocument();
-    expect(errorText).toBeInTheDocument();
+      expect(errorElement).toBeInTheDocument();
+      expect(errorNumber).toBeInTheDocument();
+      expect(errorText).toBeInTheDocument();
+    });
   });
 });

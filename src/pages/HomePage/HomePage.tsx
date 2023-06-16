@@ -16,8 +16,6 @@ const HomePage: FC = () => {
     dispatch(getHeroes({ page, limit }));
   }, [dispatch, page, limit]);
 
-  console.log(page);
-
   useEffect(() => {
     renderHeroes();
   }, [renderHeroes]);

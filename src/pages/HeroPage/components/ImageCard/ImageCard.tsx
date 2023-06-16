@@ -7,7 +7,7 @@ export const ImageCard = ({
 }) => {
   return (
     <>
-      <div className="hero-image__wrapper" key={image}>
+      <div className="hero-image__wrapper">
         <button
           className="hero-image__close-btn"
           data-testid="hero-image-close-btn"

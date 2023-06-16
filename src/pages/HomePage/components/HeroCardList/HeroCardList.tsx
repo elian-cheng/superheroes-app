@@ -27,7 +27,7 @@ const HeroCardList: React.FC<IHeroCardList> = ({ heroes }) => {
       {modalIsShown && (
         <HeroModal cardId={cardId} handleModal={() => setModalIsShown(false)} />
       )}
-      {heroes.length ? (
+      {heroes?.length ? (
         <ul
           className="hero__list grid"
           onClick={handleOpenModalCard}

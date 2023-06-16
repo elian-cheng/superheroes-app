@@ -2,27 +2,13 @@ import React, { FC, useCallback, useEffect } from 'react';
 import { Resolver, useForm } from 'react-hook-form';
 import Button from 'components/Button/Button';
 import Input from 'components/Input/Input';
-// import defaultImg from '../../../../assets/images/poster.jpg';
 import { createHero, IHero, updateHero } from 'store/heroSlice';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useAppDispatch } from 'hooks/redux';
-// import axios from 'axios';
-// import { toast } from 'react-toastify';
-// import { BASE_URL } from 'API/URL';
 import ImageUpload from '../ImageUpload/ImageUpload';
-import { useNavigate } from 'react-router-dom';
 
 export type IFormData = Omit<IHero, '_id'>;
-
-// export interface IFormData {
-//   nickname: string;
-//   real_name: string;
-//   origin_description: string;
-//   superpowers: string;
-//   catch_phrase: string;
-//   images: string[];
-// }
 
 interface IFormProps {
   hero: IHero | null;
@@ -31,37 +17,36 @@ interface IFormProps {
 
 const Form: FC<IFormProps> = ({ hero, changedImages }) => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const schema = yup.object().shape({
     nickname: yup
       .string()
-      .min(4, 'Nickname is too short - should be 4 chars minimum.')
-      .required('Name is a required field'),
+      .required('Nickname is a required field')
+      .min(4, 'Nickname is too short - should be 4 chars minimum'),
     real_name: yup
       .string()
-      .min(6, 'Real name is too short - should be 6 chars minimum.')
-      .required('Name is a required field'),
+      .required('Real name is a required field')
+      .min(6, 'Real name is too short - should be 6 chars minimum'),
     origin_description: yup
       .string()
-      .min(20, 'Origin description is too short - should be 20 chars minimum.')
-      .required('No origin story provided.'),
+      .required('No origin story provided')
+      .min(20, 'Origin description is too short - should be 20 chars minimum'),
     superpowers: yup
       .string()
-      .min(10, 'Superpowers list is too short - should be 10 chars minimum.')
-      .required('No origin story provided.'),
+      .required('No superpowers list provided')
+      .min(10, 'Superpowers list is too short - should be 10 chars minimum'),
     catch_phrase: yup
       .string()
-      .min(5, 'Catch phrase is too short - should be 5 chars minimum.')
-      .required('No origin story provided.'),
+      .required('No catch phrase provided')
+      .min(5, 'Catch phrase is too short - should be 5 chars minimum'),
     images: yup
       .array()
-      .min(1, 'Please provide at least one hero image.')
+      .min(1, 'Please provide at least one hero image')
       .of(
         yup
           .string()
-          .url('Please provide a valid URL for the hero image.')
-          .required('Please provide a hero image URL.')
+          .url('Please provide a valid URL for the hero image')
+          .required('Please provide a hero image URL')
       ),
   });
 
@@ -126,7 +111,6 @@ const Form: FC<IFormProps> = ({ hero, changedImages }) => {
         await dispatch(updateHero({ id: hero._id!, heroData: requestData }));
         location.reload();
         reset();
-        navigate('/');
       } catch (err) {
         console.error(err);
       }
