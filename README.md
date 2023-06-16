@@ -30,7 +30,7 @@ https://github.com/elian-cheng/superheroes-app/tree/server
 1. git clone https://github.com/elian-cheng/superheroes-app.git
 2. cd superheroes-app
 3. git checkout front
-4. npm i
+4. npm i --force
 5. npm run dev
 ```
 
