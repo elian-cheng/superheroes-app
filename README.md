@@ -5,14 +5,10 @@ Test task, practice CRUD operations with a hero instance. Development time limit
 ### Functionality:
 
 - Show the list of heroes
-- Show individual hero card
+- Show individual hero card (with image gallery)
 - Create a hero
 - Edit a hero
 - Delete a hero
-
-## Deploy
-
-https://elian-cheng-superheroes-app.netlify.app/
 
 ## Front-End
 
@@ -30,7 +26,7 @@ https://github.com/elian-cheng/superheroes-app/tree/server
 1. git clone https://github.com/elian-cheng/superheroes-app.git
 2. cd superheroes-app
 3. git checkout front
-4. npm i --force
+4. npm i
 5. npm run dev
 ```
 
